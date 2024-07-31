@@ -36,8 +36,8 @@ RUN adduser --disabled-password --no-create-home duser && \
   chown -R duser:duser /data/web/media && \
   chmod -R 755 /data/web/static && \
   chmod -R 755 /data/web/media && \
-  chmod -R +x /scripts
-
+  chmod -R +x /scripts 
+  
 # Configuração do PATH
 ENV PATH="/scripts:/venv/bin:$PATH"
 
@@ -46,6 +46,7 @@ ENV PATH=$PATH:/usr/bin/pwsh
 
 # Troca de usuário
 USER duser
+
 
 # Comando de execução
 CMD ["pwsh", "-Command", "commands.ps1"]
