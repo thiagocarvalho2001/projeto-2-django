@@ -1,7 +1,6 @@
 from django.contrib import admin
 from staff_site.models import MenuLink, SiteSetup
 
-
 @admin.register(MenuLink)
 class MenuLinkAdmin(admin.ModelAdmin):
     list_display = 'id', 'text', 'url_or_path',
@@ -20,3 +19,5 @@ class SiteSetupAdmin(admin.ModelAdmin):
 
     def has_add_permission(self, request):
         return not SiteSetup.objects.exists()
+    
+    
