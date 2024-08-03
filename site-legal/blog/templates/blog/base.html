@@ -3,6 +3,7 @@
   <div class="blog-wrapper">
     {% if site_setup.show_header %}
       {% include 'blog/partials/_header.html' %}
+      {% block additional_head %}{% endblock additional_head %}
     {% endif %}
 
     {% block content %}{% endblock content %}
