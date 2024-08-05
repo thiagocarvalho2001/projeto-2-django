@@ -17,9 +17,8 @@ class PostAttachment(AbstractAttachment):
             file_changed = current_file_name != self.file.name
 
         if file_changed:
-            resize_image(self.file, 900)
-
-
+            resize_image(self.file, 900, True, 50)
+    
         return super_save
 
 
@@ -36,6 +35,9 @@ class Tag(models.Model):
         if not self.slug:
             self.slug = slugi_new(self.name, 4)
         return super().save(*args, **kwargs)
+    
+    def __str__(self):
+        return self.name
     
 
 class Category(models.Model):
@@ -55,7 +57,7 @@ class Category(models.Model):
         return super().save(*args, **kwargs)
     
 
-    def __str__(self) -> str:
+    def __str__(self):
         return self.name
 
 
@@ -149,7 +151,7 @@ class Post(models.Model):
             cover_changed = current_cover_name != self.cover.name
 
         if cover_changed:
-            resize_image(self.cover, 900)
+            resize_image(self.cover, 900, True, 50)
 
 
         return super_save

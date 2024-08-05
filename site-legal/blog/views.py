@@ -1,4 +1,5 @@
 from typing import Any
+from django.db.models.query import QuerySet
 from django.shortcuts import render, redirect
 from blog.models import Post, Page, User
 from django.db.models import Q
@@ -16,7 +17,8 @@ class PostListView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context.update({
-            'page_title': 'Home -',
+            'page_title': f'Home - '
+,
         })
         return context
 
@@ -35,7 +37,7 @@ class PostDetailView(DetailView):
         return context
 
 
-class PageDatailView(DetailView):
+class PageDetailView(DetailView):
     template_name = 'blog/pages/page.html'
     model = Page
     slug_field = 'slug'
@@ -76,7 +78,7 @@ class CreateByListView(PostListView):
 
         return context
     
-    def get_queryset(self):
+    def get_queryset(self) -> QuerySet[Any]:
         qs = super().get_queryset()
         qs = qs.filter(created_by__pk=self._temp_context['user'].pk)
         return qs
@@ -84,7 +86,7 @@ class CreateByListView(PostListView):
     
     def get(self, request: HttpRequest, *args: Any, **kwargs: Any) -> HttpResponse:
         author_pk = self.kwargs.get('author_pk')
-        user = User.objects.filter(pk=author_pk)
+        user = User.objects.filter(pk=author_pk).first()
 
         if user is None:
             raise Http404()
@@ -130,36 +132,36 @@ class TagListViews(PostListView):
 
 
 class SearchListView(PostListView):
-    def __init__(self, *args, **kwargs: Any) -> None:
+    def __init__(self, *args, **kwargs: Any):
         super().__init__(*args, **kwargs)
         self._search_value = ''
 
-    def setup(self, request: HttpRequest, *args, **kwargs):
-        self._search_value = request.GET.get('search').strip()
+    def setup(self, request, *args, **kwargs):
+        self._search_value = request.GET.get('search', '').strip()
         return super().setup(request, *args, **kwargs)
     
-    def get_queryset(self):
+    def get_queryset(self) -> QuerySet[Any]:
         return super().get_queryset().filter(
-        Q(title__icontains=self.search_value) |
-        Q(content__icontains=self.search_value) |
-        Q(tags__name__icontains=self.search_value) |
-        Q(category__name__icontains=self.search_value) |
-        Q(created_by__first_name__icontains=self.search_value) |
-        Q(created_by__last_name__icontains=self.search_value)
+        Q(title__icontains=self._search_value) |
+        Q(content__icontains=self._search_value) |
+        Q(tags__name__icontains=self._search_value) |
+        Q(category__name__icontains=self._search_value) |
+        Q(created_by__first_name__icontains=self._search_value) |
+        Q(created_by__last_name__icontains=self._search_value)
     )[0:PER_PAGE]
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
         context.update({
-            'page_title': f'Search results for "{self.search_value}"',
+            'page_title': f'Search results for "{self._search_value}"',
             'search_value': self._search_value
         })
 
         return context
     
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
-        if not self.search_value:
+        if not self._search_value:
             return redirect('blog:index')
         return super().get(request, *args, **kwargs)
     

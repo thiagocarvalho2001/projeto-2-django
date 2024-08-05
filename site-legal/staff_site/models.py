@@ -12,7 +12,7 @@ class MenuLink(models.Model):
     new_tab = models.BooleanField(default=False)
     site_setup = models.ForeignKey(
         'SiteSetup', on_delete=models.CASCADE, blank=True, null=True, default=None,
-        related_name='menulink_set'
+        related_name='menu'
     )
 
     def __str__(self):
@@ -26,12 +26,12 @@ class SiteSetup(models.Model):
     title = models.CharField(max_length=65)
     description = models.CharField(max_length=255)
 
-    show_header = models.BooleanField(default=True)
-    show_search = models.BooleanField(default=True)
-    show_menu = models.BooleanField(default=True)
-    show_description = models.BooleanField(default=True)
-    show_pagination = models.BooleanField(default=True)
-    show_footer = models.BooleanField(default=True)
+    show_header = models.BooleanField()
+    show_search = models.BooleanField()
+    show_menu = models.BooleanField()
+    show_description = models.BooleanField()
+    show_pagination = models.BooleanField()
+    show_footer = models.BooleanField()
 
     favicon = models.ImageField(upload_to='assets/favicon/%Y/%m', blank=True,
      default='', validators=[validate_png])

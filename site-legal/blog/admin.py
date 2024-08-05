@@ -1,8 +1,6 @@
-from typing import Any
 from django.contrib import admin
 from blog.models import Tag, Category, Page, Post
 from django_summernote.admin import SummernoteModelAdmin
-from django.urls import reverse
 from django.utils.safestring import mark_safe
 
 @admin.register(Tag)
